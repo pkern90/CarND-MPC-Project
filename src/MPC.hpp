@@ -26,13 +26,13 @@ const size_t IX_EPSI_START = IX_CTE_START + N;
 const size_t IX_DELTA_START = IX_EPSI_START + N;
 const size_t IX_A_START = IX_DELTA_START + N - 1;
 
-const double W_CTE = 1.0;
-const double W_EPSI = 2.0;
-const double W_V = 0.05;
-const double W_DELTA = 100.0;
-const double W_A = 0.2;
-const double W_DDELTA = 10.0;
-const double W_DA = 100.0;
+const double LAMBDA_CTE = 2.0;
+const double LAMBDA_EPSI = 3.0;
+const double LAMBDA_V = 0.1;
+const double LAMBDA_DELTA = 150.0;
+const double LAMBDA_A = 0.2;
+const double LAMBDA_DDELTA = 20.0;
+const double LAMBDA_DA = 50.0;
 
 
 class MPC {

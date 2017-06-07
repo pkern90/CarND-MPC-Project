@@ -75,6 +75,7 @@ static Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
     return result;
 }
 
+
 static std::tuple<std::vector<double>, std::vector<double>>
 createWaypointVizualization(Eigen::VectorXd poly, int nb_vizpoints, double step_size) {
     std::vector<double> vizpoints_x(nb_vizpoints);

@@ -23,21 +23,21 @@ public:
 
         // The part of the cost based on the reference state.
         for (int i = 0; i < N; i++) {
-            fg[0] += W_CTE * CppAD::pow(vars[IX_CTE_START + i] - REF_CTE, 2);
-            fg[0] += W_EPSI * CppAD::pow(vars[IX_EPSI_START + i] - REF_EPSI, 2);
-            fg[0] += W_V * CppAD::pow(vars[IX_V_START + i] - REF_V, 2);
+            fg[0] += LAMBDA_CTE * CppAD::pow(vars[IX_CTE_START + i] - REF_CTE, 2);
+            fg[0] += LAMBDA_EPSI * CppAD::pow(vars[IX_EPSI_START + i] - REF_EPSI, 2);
+            fg[0] += LAMBDA_V * CppAD::pow(vars[IX_V_START + i] - REF_V, 2);
         }
 
         // Minimize the use of actuators.
         for (int i = 0; i < N - 1; i++) {
-            fg[0] += W_DELTA * CppAD::pow(vars[IX_DELTA_START + i], 2);
-            fg[0] += W_A * CppAD::pow(vars[IX_A_START + i], 2);
+            fg[0] += LAMBDA_DELTA * CppAD::pow(vars[IX_DELTA_START + i], 2);
+            fg[0] += LAMBDA_A * CppAD::pow(vars[IX_A_START + i], 2);
         }
 
         // Minimize the value gap between sequential actuations.
         for (int i = 0; i < N - 2; i++) {
-            fg[0] += W_DDELTA * CppAD::pow(vars[IX_DELTA_START + i + 1] - vars[IX_DELTA_START + i], 2);
-            fg[0] += W_DA * CppAD::pow(vars[IX_A_START + i + 1] - vars[IX_A_START + i], 2);
+            fg[0] += LAMBDA_DDELTA * CppAD::pow(vars[IX_DELTA_START + i + 1] - vars[IX_DELTA_START + i], 2);
+            fg[0] += LAMBDA_DA * CppAD::pow(vars[IX_A_START + i + 1] - vars[IX_A_START + i], 2);
         }
 
 
