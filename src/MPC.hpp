@@ -10,8 +10,8 @@ using namespace std;
 
 const double LF = 2.67;
 
-const size_t N = 10;
-const double DT = 0.20;
+const size_t N = 9;
+const double DT = 0.22;
 
 const double REF_CTE = 0;
 const double REF_EPSI = 0;

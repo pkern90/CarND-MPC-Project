@@ -33,7 +33,7 @@ static State globalKinematic(State &state,
 
     auto nextX = state.x + state.v * cos(state.psi) * dt;
     auto nextY = state.y + state.v * sin(state.psi) * dt;
-    auto nextPsi = state.psi + (state.v * tan(-delta) / lf) * dt;
+    auto nextPsi = state.psi + (state.v * -delta / lf) * dt;
     auto nextV = state.v + a * dt;
 
     State nextState = {nextX, nextY, nextPsi, nextV};

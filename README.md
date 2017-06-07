@@ -3,6 +3,80 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Description
+
+### Model
+
+For the project a simple kinematic model was used. The state consists of four variables, namely x coordinate, y coordinate, heading direction and velocity.
+The actuators consist of the steering angle and the acceleration (negative or positive). A summary is given in the image below.
+
+![state and actuators](images/state_and_actuators.png)
+
+For the update function the equations provided in the classroom were used.
+
+![update functions](images/update_functions.png)
+
+### Time step & duration
+
+To find suitable values for the hyperparameters N and dt, a target speed of 80 mph was set and kept constant. Then a target value for
+T (N * dt) was determined by fixing dt to 0.1 and increasing N until the visualization of the predictions covered most of the visible road in front of the car without going to far into the horizon. 
+T around 2 seconds seems to be a reasonable target value. The resulting values N=20 and dt=0.1 caused the car to oscillate.
+In the next step I doubled N, reduced dt by halved (keeping T constant) and vice versa. N=40;dt0.05 made the oscillating even worse but N=10;dt0.2 already worked quite nicely.
+After that I tried different values for 0 > N < 20 with the corresponding dt so that 2 = N * dt. In the end N=9;dt=0.22 worked best.
+
+### MPC
+
+For the MPC implementation the result of the _Model Predictive Control quiz_ was used as a starting point. To improve the controller lambda terms
+were added to all the individual cost terms. This way each part of the cost function can be tuned individually to achieve smooth results.
+The final lambda values are shown below.
+
+```
+const double LAMBDA_CTE = 2.0;
+const double LAMBDA_EPSI = 3.0;
+const double LAMBDA_V = 0.1;
+const double LAMBDA_DELTA = 150.0;
+const double LAMBDA_A = 0.2;
+const double LAMBDA_DDELTA = 20.0;
+const double LAMBDA_DA = 50.0;
+```
+
+The cost function definition is displayed below.
+
+```
+// The part of the cost based on the reference state.
+for (int i = 0; i < N; i++) {
+    fg[0] += LAMBDA_CTE * CppAD::pow(vars[IX_CTE_START + i] - REF_CTE, 2);
+    fg[0] += LAMBDA_EPSI * CppAD::pow(vars[IX_EPSI_START + i] - REF_EPSI, 2);
+    fg[0] += LAMBDA_V * CppAD::pow(vars[IX_V_START + i] - REF_V, 2);
+}
+
+// Minimize the use of actuators.
+for (int i = 0; i < N - 1; i++) {
+    fg[0] += LAMBDA_DELTA * CppAD::pow(vars[IX_DELTA_START + i], 2);
+    fg[0] += LAMBDA_A * CppAD::pow(vars[IX_A_START + i], 2);
+}
+
+// Minimize the value gap between sequential actuations.
+for (int i = 0; i < N - 2; i++) {
+    fg[0] += LAMBDA_DDELTA * CppAD::pow(vars[IX_DELTA_START + i + 1] - vars[IX_DELTA_START + i], 2);
+    fg[0] += LAMBDA_DA * CppAD::pow(vars[IX_A_START + i + 1] - vars[IX_A_START + i], 2);
+}
+```
+
+For the contrains the equations from the classroom were used which are based on the kinematic model.
+
+![update functions](images/constrains.png)
+
+
+### Latency handling
+
+To handle the simulated latency of 100 ms, the kinematic model was used to predict the cars position when receiving the command.
+To do that the latency was converted to seconds and plugged into the _dt_ variable. This "delayed" state was then used as the base for all the calculations. 
+
+![update functions](images/update_functions.png)
+
+---
+
 ## Dependencies
 
 * cmake >= 3.5

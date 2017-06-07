@@ -14,8 +14,8 @@ public:
 
     typedef CPPAD_TESTVECTOR(AD<double>) ADvector;
 
-//     `fg` is a vector containing the cost and constraints.
-//     `vars` is a vector containing the variable values (state & actuators).
+    // `fg` is a vector containing the cost and constraints.
+    // `vars` is a vector containing the variable values (state & actuators).
     void operator()(ADvector &fg, const ADvector &vars) {
         // The cost is stored is the first element of `fg`.
         // Any additions to the cost should be added to `fg[0]`.

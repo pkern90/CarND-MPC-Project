@@ -61,8 +61,9 @@ int main() {
 
 
                     // These two vectors hold vehicle coordinates
-                    vector<double> vehicle_x(ptsx.size());
-                    vector<double> vehicle_y(ptsy.size());
+                    vector<double> next_x(ptsx.size());
+                    vector<double> next_y(ptsy.size());
+
                     State currentState = {px, py, psi, v_mps};
                     auto delayedState = globalKinematic(currentState, delta, a, 0.1, LF);
 
@@ -72,13 +73,13 @@ int main() {
                         double cos_psi = cos(delayedState.psi);
                         double sin_psi = sin(delayedState.psi);
 
-                        vehicle_x[i] = map_x * cos_psi + map_y * sin_psi;
-                        vehicle_y[i] = -map_x * sin_psi + map_y * cos_psi;
+                        next_x[i] = map_x * cos_psi + map_y * sin_psi;
+                        next_y[i] = -map_x * sin_psi + map_y * cos_psi;
                     }
 
                     auto coeffs = polyfit(
-                            Eigen::Map<Eigen::VectorXd>(&vehicle_x[0], vehicle_x.size()),
-                            Eigen::Map<Eigen::VectorXd>(&vehicle_y[0], vehicle_y.size()),
+                            Eigen::Map<Eigen::VectorXd>(&next_x[0], next_x.size()),
+                            Eigen::Map<Eigen::VectorXd>(&next_y[0], next_y.size()),
                             2
                     );
 
@@ -101,8 +102,8 @@ int main() {
                     msgJson["mpc_y"] = mpc.y_vals;
 
                     // Waypoints next X and Y coordinates
-                    msgJson["next_x"] = vehicle_x;
-                    msgJson["next_y"] = vehicle_y;
+                    msgJson["next_x"] = next_x;
+                    msgJson["next_y"] = next_y;
 
 
                     auto msg = "42[\"steer\"," + msgJson.dump() + "]";
